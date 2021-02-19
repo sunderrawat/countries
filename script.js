@@ -56,35 +56,34 @@ const renderCountry = function(data, className =''){
     countriesContainer.style.opacity = 1;
 }
 
-const getCountryAndNeighbour = function(country){
+// const getCountryAndNeighbour = function(country){
 
-    const request = new XMLHttpRequest();
-    request.open('GET', `https://restcountries.eu/rest/v2/name/${country}`);
-    request.send();
-    request.addEventListener('load', function(){
-        const [data] = JSON.parse(this.responseText);
-     //   console.log(data);
+//     const request = new XMLHttpRequest();
+//     request.open('GET', `https://restcountries.eu/rest/v2/name/${country}`);
+//     request.send();
+//     request.addEventListener('load', function(){
+//         const [data] = JSON.parse(this.responseText);
+//      //   console.log(data);
 
-        //render country
-    renderCountry(data);
+//         //render country
+//     renderCountry(data);
 
-    //request for neighour country
-    const [neighbour] = data.borders;
-    if(!neighbour) return;
-   // console.log(neighbour);
-    const request2 = new XMLHttpRequest();
-    request2.open('GET', `https://restcountries.eu/rest/v2/alpha/${neighbour}`);
-    request2.send();
-    request2.addEventListener('load', function(){
-        const data = JSON.parse(this.responseText);
-        //console.log(data);
-        renderCountry(data, 'neighbour');
-    });
+//     //request for neighour country
+//     const [neighbour] = data.borders;
+//     if(!neighbour) return;
+//    // console.log(neighbour);
+//     const request2 = new XMLHttpRequest();
+//     request2.open('GET', `https://restcountries.eu/rest/v2/alpha/${neighbour}`);
+//     request2.send();
+//     request2.addEventListener('load', function(){
+//         const data = JSON.parse(this.responseText);
+//         //console.log(data);
+//         renderCountry(data, 'neighbour');
+//     });
 
-});
-};
-
-getCountryAndNeighbour('bharat');
+// });
+// };
+// getCountryAndNeighbour('bharat');
 
 // ----------- use promise in fetch api-----------
 
@@ -100,9 +99,27 @@ getCountryAndNeighbour('bharat');
 // }
 
 // ----------simplyfy fetch---------
+// const getCountry = function(country){
+//     fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+//     .then(response => response.json())
+//     .then(data => renderCountry(data[0]))
+// }
+// getCountry('usa');
+
+//------------ add neighbour country from fetch ---------
+
 const getCountry = function(country){
     fetch(`https://restcountries.eu/rest/v2/name/${country}`)
     .then(response => response.json())
-    .then(data => renderCountry(data[0]))
+    .then(data => {
+        renderCountry(data[0])
+        const neighbour = data[0].borders[0];
+        if(!neighbour) return;
+        return fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`)
+    })
+    .then(response => response.json())
+    .then(data => {
+        renderCountry(data, 'neighbour');
+    })
 }
 getCountry('usa');
