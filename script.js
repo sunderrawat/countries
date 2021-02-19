@@ -71,7 +71,7 @@ const getCountryAndNeighbour = function(country){
     //request for neighour country
     const [neighbour] = data.borders;
     if(!neighbour) return;
-    console.log(neighbour);
+   // console.log(neighbour);
     const request2 = new XMLHttpRequest();
     request2.open('GET', `https://restcountries.eu/rest/v2/alpha/${neighbour}`);
     request2.send();
@@ -84,4 +84,25 @@ const getCountryAndNeighbour = function(country){
 });
 };
 
-    getCountryAndNeighbour('bharat');
+getCountryAndNeighbour('bharat');
+
+// ----------- use promise in fetch api-----------
+
+// const getCountry = function(country){
+//     fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+//       .then(function(response){
+//         console.log(response);
+//         return response.json();
+//     }).then(function(data){
+//         console.log(data[0]);
+//         renderCountry(data[0]);
+//     })
+// }
+
+// ----------simplyfy fetch---------
+const getCountry = function(country){
+    fetch(`https://restcountries.eu/rest/v2/name/${country}`)
+    .then(response => response.json())
+    .then(data => renderCountry(data[0]))
+}
+getCountry('usa');
