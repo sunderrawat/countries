@@ -108,18 +108,37 @@ const renderCountry = function(data, className =''){
 
 //------------ add neighbour country from fetch ---------
 
+const renderError = function(msg){
+countriesContainer.insertAdjacentText('beforeend', msg);
+countriesContainer.style.opacity = 1;
+}
+
+const getJSON = function(url){
+  return fetch(url)
+    .then(response => {
+      if(!response.ok){
+        throw new Error('country not found');
+      }
+      return response.json()
+    })
+}
+
 const getCountry = function(country){
-    fetch(`https://restcountries.eu/rest/v2/name/${country}`)
-    .then(response => response.json())
+    getJSON(`https://restcountries.eu/rest/v2/name/${country}`)
     .then(data => {
         renderCountry(data[0])
         const neighbour = data[0].borders[0];
-        if(!neighbour) return;
-        return fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`)
+        if(!neighbour) {throw new Error('No neighbour country is present');}
+        return getJSON(`https://restcountries.eu/rest/v2/alpha/${neighbour}`)
     })
-    .then(response => response.json())
     .then(data => {
         renderCountry(data, 'neighbour');
     })
+    .catch(err => {
+      renderError(`Somthing went wrong :: ${err.message} :: Try again!`);
+    })
 }
-getCountry('usa');
+btn.addEventListener('click', function(){
+  getCountry('bharat');
+});
+//getCountry('usa');
