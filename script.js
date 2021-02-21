@@ -137,6 +137,9 @@ const getCountry = function(country){
     .catch(err => {
       renderError(`Somthing went wrong :: ${err.message} :: Try again!`);
     })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
 }
 btn.addEventListener('click', function(){
   getCountry('bharat');
