@@ -141,7 +141,24 @@ const getCountry = function(country){
       countriesContainer.style.opacity = 1;
     });
 }
-btn.addEventListener('click', function(){
-  getCountry('bharat');
-});
+// btn.addEventListener('click', function(){
+//   getCountry('bharat');
+// });
 //getCountry('usa');
+
+const whereIAm = function(lon, lat){
+  return fetch(`https://geocode.xyz/${lon},${lat}?geoit=json`)
+  .then(response => {
+      if(!response.ok){
+          throw new Error(`Response not get from geocoding ${response.status}`);
+      }  
+  return response.json()})
+  .then(data => {
+      console.log(`You are in ${data.city}, ${data.region}, ${data.country}`);
+      return getCountry(data.country);
+  })
+  .catch(err => {
+      console.log(`Someting went wrong ${err.message}`);
+  })
+}
+whereIAm('-33.933', '18.474');
